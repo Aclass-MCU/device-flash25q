@@ -280,7 +280,7 @@ static sfud_err hardware_init(sfud_flash *flash) {
 #ifdef SFUD_USING_SFDP
         extern bool sfud_read_sfdp(sfud_flash *flash);
         /* read SFDP parameters */
-        if (sfud_read_sfdp(flash)) {
+        if (0 /* DISABLED: sfud_read_sfdp(flash) */) {
             flash->chip.name = NULL;
             flash->chip.capacity = flash->sfdp.capacity;
             /* only 1 byte or 256 bytes write mode for SFDP */
@@ -907,9 +907,8 @@ static sfud_err set_write_enabled(const sfud_flash *flash, bool enabled) {
     } else {
         cmd = SFUD_CMD_WRITE_DISABLE;
     }
-
+    cmd = (enabled ? SFUD_CMD_WRITE_ENABLE : SFUD_CMD_WRITE_DISABLE);
     result = flash->spi.wr(&flash->spi, &cmd, 1, NULL, 0);
-
     if (result == SFUD_SUCCESS) {
         result = sfud_read_status(flash, &register_status);
     }
@@ -977,11 +976,14 @@ static sfud_err set_4_byte_address_mode(sfud_flash *flash, bool enabled) {
  */
 sfud_err sfud_read_status(const sfud_flash *flash, uint8_t *status) {
     uint8_t cmd = SFUD_CMD_READ_STATUS_REGISTER;
+    sfud_err ret;
 
     SFUD_ASSERT(flash);
     SFUD_ASSERT(status);
 
-    return flash->spi.wr(&flash->spi, &cmd, 1, status, 1);
+    *status = 0xFF;
+    ret = flash->spi.wr(&flash->spi, &cmd, 1, status, 1);
+    return ret;
 }
 
 static sfud_err wait_busy(const sfud_flash *flash) {
@@ -993,10 +995,10 @@ static sfud_err wait_busy(const sfud_flash *flash) {
 
     while (true) {
         result = sfud_read_status(flash, &status);
+
         if (result == SFUD_SUCCESS && ((status & SFUD_STATUS_REGISTER_BUSY)) == 0) {
             break;
         }
-        /* retry counts */
         SFUD_RETRY_PROCESS(flash->retry.delay, retry_times, result);
     }
 

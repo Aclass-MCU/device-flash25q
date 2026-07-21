@@ -43,6 +43,8 @@ target_sources(aFlash25q PUBLIC
 
 target_link_libraries(aFlash25q PUBLIC aDrv)
 
+target_include_directories(aFlash25q PRIVATE ${PROJECT_SOURCE_DIR}/func/aShell)
+
 install(TARGETS aFlash25q
     ARCHIVE   DESTINATION lib
     FILE_SET HEADERS  DESTINATION include/aFlash25q

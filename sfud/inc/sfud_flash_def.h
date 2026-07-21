@@ -142,6 +142,7 @@ typedef struct {
     {"M25P40", SFUD_MF_ID_MICRON, 0x20, 0x13, 512L*1024L, SFUD_WM_PAGE_256B, 64L*1024L, 0xD8},                      \
     {"EN25Q32B", SFUD_MF_ID_EON, 0x30, 0x16, 4L*1024L*1024L, SFUD_WM_PAGE_256B, 4096, 0x20},                        \
     {"GD25Q64B", SFUD_MF_ID_GIGADEVICE, 0x40, 0x17, 8L*1024L*1024L, SFUD_WM_PAGE_256B, 4096, 0x20},                 \
+    {"GD25B512ME", SFUD_MF_ID_GIGADEVICE, 0x47, 0x1A, 64L*1024L*1024L, SFUD_WM_PAGE_256B, 4096, 0x20},              \
     {"GD25Q16B", SFUD_MF_ID_GIGADEVICE, 0x40, 0x15, 2L*1024L*1024L, SFUD_WM_PAGE_256B, 4096, 0x20},                 \
     {"GD25Q32C", SFUD_MF_ID_GIGADEVICE, 0x40, 0x16, 4L*1024L*1024L, SFUD_WM_PAGE_256B, 4096, 0x20},                 \
     {"S25FL216K", SFUD_MF_ID_CYPRESS, 0x40, 0x15, 2L*1024L*1024L, SFUD_WM_PAGE_256B, 4096, 0x20},                   \
@@ -191,6 +192,8 @@ typedef struct {
     {SFUD_MF_ID_MACRONIX, 0x20, 0x16, NORMAL_SPI_READ|DUAL_OUTPUT},                                \
     /* MX25L51245G */                                                                              \
     {SFUD_MF_ID_MACRONIX, 0x20, 0x1A, NORMAL_SPI_READ|DUAL_OUTPUT|DUAL_IO|QUAD_OUTPUT|QUAD_IO},    \
+    /* GD25B512ME */                                                                               \
+    {SFUD_MF_ID_GIGADEVICE, 0x47, 0x1A, NORMAL_SPI_READ|DUAL_OUTPUT|DUAL_IO|QUAD_OUTPUT|QUAD_IO},  \
     /* GD25Q64B */                                                                                 \
     {SFUD_MF_ID_GIGADEVICE, 0x40, 0x17, NORMAL_SPI_READ|DUAL_OUTPUT},                              \
     /* NM25Q128EVB */                                                                              \

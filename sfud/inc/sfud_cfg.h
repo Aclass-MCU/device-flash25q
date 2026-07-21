@@ -29,23 +29,28 @@
 #ifndef _SFUD_CFG_H_
 #define _SFUD_CFG_H_
 
+/* ── SFUD 调试输出开关 ── */
 #define SFUD_DEBUG_MODE
 
+/* ── 使用 SFDP (JESD216) 自动探测 Flash 参数 ── */
 #define SFUD_USING_SFDP
 
-// #define SFUD_USING_FAST_READ
+// #define SFUD_USING_FAST_READ    /* 旧版 Fast Read (未启用，改用 SFUD_USING_QSPI) */
 
+/* ── 使用芯片参数表匹配 (JEDEC ID 查 SFUD_FLASH_CHIP_TABLE) ── */
 #define SFUD_USING_FLASH_INFO_TABLE
 
 enum {
-    SFUD_XXXX_DEVICE_INDEX = 0,
+    SFUD_ADEV_FLASH_DEVICE_INDEX = 0,  /* 本系统只有一个 Flash 设备 */
 };
 
+/* ── Flash 设备列表 ── */
 #define SFUD_FLASH_DEVICE_TABLE                                                \
 {                                                                              \
-    [SFUD_XXXX_DEVICE_INDEX] = {.name = "XXXX", .spi.name = "SPIX"},           \
+    [SFUD_ADEV_FLASH_DEVICE_INDEX] = {.name = "flash25q", .spi.name = "QSPI"}, \
 }
 
+/* ── 启用 QSPI 四线读路径 (需实现 qspi_read 端口函数) ── */
 #define SFUD_USING_QSPI
 
 #endif /* _SFUD_CFG_H_ */
