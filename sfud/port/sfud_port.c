@@ -10,18 +10,12 @@
 static aDrvQspiHandle_t *g_qspi = NULL;
 static bool g_addr_4byte = false;
 static char log_buf[256];
-static char dbg_buf[128];
 
 extern aShellHandle_t shell_handle;
 
-void sfud_dbg_printf(const char *fmt, ...)
-{
-    va_list args;
-    va_start(args, fmt);
-    vsnprintf(log_buf, sizeof(log_buf), fmt, args);
-    va_end(args);
-    aShellPrint(&shell_handle, "%s", log_buf);
-}
+#ifdef SFUD_DEBUG_MODE
+static char dbg_buf[128];
+#endif
 
 void aDevFlash25qPortSetQspiHandle(aDrvQspiHandle_t *handle)
 {
@@ -69,8 +63,10 @@ static sfud_err qspi_command(uint8_t instruction, uint32_t address, uint32_t add
     if (instruction == 0xE9) g_addr_4byte = false;
 
     aDrvStatus_t ac = aDrvQspiCommand(g_qspi, &cmd);
+#ifdef SFUD_DEBUG_MODE
     sfud_dbg_printf("qspi_cmd: ins=0x%02X nb=%lu rx=%lu fmode=%lu ret=%d\r\n",
            instruction, cmd.NbData, rx_size, (unsigned long)cmd.FunctionalMode, ac);
+#endif
 
     if (ac != ADRV_OK)
         return SFUD_ERR_TIMEOUT;
@@ -78,13 +74,16 @@ static sfud_err qspi_command(uint8_t instruction, uint32_t address, uint32_t add
     if (tx_size > 0 && tx_data != NULL)
     {
         aDrvStatus_t at = aDrvQspiTransmit(g_qspi, tx_data, tx_size);
+#ifdef SFUD_DEBUG_MODE
         sfud_dbg_printf("qspi_tx: size=%lu ret=%d\r\n", tx_size, at);
+#endif
         if (at != ADRV_OK)
             return SFUD_ERR_TIMEOUT;
     }
     else if (rx_size > 0 && rx_data != NULL)
     {
         aDrvStatus_t ar = aDrvQspiReceive(g_qspi, rx_data, rx_size);
+#ifdef SFUD_DEBUG_MODE
         if (rx_size <= 8) {
             int p = 0;
             for (uint32_t q = 0; q < rx_size && p < (int)sizeof(dbg_buf) - 4; q++)
@@ -93,6 +92,7 @@ static sfud_err qspi_command(uint8_t instruction, uint32_t address, uint32_t add
         } else {
             sfud_dbg_printf("qspi_rx: ret=%d size=%lu\r\n", ar, rx_size);
         }
+#endif
         if (ar != ADRV_OK)
             return SFUD_ERR_TIMEOUT;
     }
@@ -197,6 +197,7 @@ sfud_err sfud_spi_port_init(sfud_flash *flash)
     return SFUD_SUCCESS;
 }
 
+#ifdef SFUD_DEBUG_MODE
 void sfud_log_debug(const char *file, const long line, const char *format, ...)
 {
     va_list args;
@@ -205,6 +206,9 @@ void sfud_log_debug(const char *file, const long line, const char *format, ...)
     va_end(args);
     aShellPrint(&shell_handle, "[SFUD](%s:%ld) %s\r\n", file, line, log_buf);
 }
+#else
+void sfud_log_debug(const char *file, const long line, const char *format, ...) { (void)file; (void)line; (void)format; }
+#endif
 
 void sfud_log_info(const char *format, ...)
 {

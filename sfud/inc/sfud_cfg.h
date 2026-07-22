@@ -30,7 +30,7 @@
 #define _SFUD_CFG_H_
 
 /* ── SFUD 调试输出开关 ── */
-#define SFUD_DEBUG_MODE
+// #define SFUD_DEBUG_MODE
 
 /* ── 使用 SFDP (JESD216) 自动探测 Flash 参数 ── */
 #define SFUD_USING_SFDP
